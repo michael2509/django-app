@@ -1,22 +1,27 @@
 ## Lancer le projet  
 
-Règle les problème de permissions
+Cloner le projet
 ```console
-foo@bar:~$ sudo chown -R $USER:$USER ./
+git clone git@github.com:michael2509/django-app.git
+```
+
+```console
+cd django-app/
 ```
 
 Lancer le projet
 ```console
-foo@bar:~$ docker-compose up
+docker-compose up
 ```
 
 Initialiser la base de donnée
 ```console
-foo@bar:~$ docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
 ```
 
+Créer l'utilisateur admin
 ```console
-foo@bar:~$ docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
 ```
 
-Open browser in http://localhost:8000/polls
+Open browser in http://localhost:8000/admin
