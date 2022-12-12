@@ -1,5 +1,7 @@
 ## Lancer le projet  
 
+Notre library-project possède plusieurs apps (principe django)
+
 Cloner le projet
 ```console
 git clone git@github.com:michael2509/django-app.git
