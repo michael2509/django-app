@@ -1,6 +1,7 @@
 ## Lancer le projet  
 
 Notre library-project possède plusieurs apps (principe django)
+Les relations entre les modèles de bdd (ou entités) doivent être définies que d'un côté de la relation
 
 Cloner le projet
 ```console
