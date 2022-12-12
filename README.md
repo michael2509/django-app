@@ -33,3 +33,16 @@ docker-compose exec web python manage.py createsuperuser
 ```
 
 Open browser in http://localhost:8000/admin
+
+
+
+
+
+
+
+
+Fixtures
+
+https://docs.djangoproject.com/en/4.1/ref/django-admin/#django-admin-dumpdata
+
+https://docs.djangoproject.com/en/4.1/howto/initial-data/

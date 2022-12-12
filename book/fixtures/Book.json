@@ -1,0 +1,46 @@
+[
+    {
+      "model": "book.book",
+      "pk": 1,
+      "fields": {
+        "book_title": "John",
+        "book_author": "Lennon",
+        "book_editor": "CNN",
+        "book_genre": "Rock",
+        "book_cover": ""
+      }
+    },
+    {
+      "model": "book.book",
+      "pk": 2,
+      "fields": {
+        "book_title": "Spiderman",
+        "book_author": "Marvel",
+        "book_editor": "BBC",
+        "book_genre": "Comic",
+        "book_cover": ""
+      }
+    },
+    {
+        "model": "book.book",
+        "pk": 3,
+        "fields": {
+          "book_title": "Harry Potter",
+          "book_author": "J.K. Rowling",
+          "book_editor": "BBC",
+          "book_genre": "Fantasy",
+          "book_cover": ""
+        }
+    },
+    {
+        "model": "book.book",
+        "pk": 4,
+        "fields": {
+          "book_title": "The Lord of the Rings",
+          "book_author": "J.R.R. Tolkien",
+          "book_editor": "BBC",
+          "book_genre": "Fantasy",
+          "book_cover": ""
+        }
+    }
+]  
