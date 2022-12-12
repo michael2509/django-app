@@ -1,0 +1,10 @@
+{% if libraries %}
+    <ul>
+    {% for library in libraries %}
+        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+        <p>{{ library.name }} - {{ library.address }}</p>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Il n'y a pas encore de bibliothèque.</p>
+{% endif %}

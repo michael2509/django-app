@@ -1,0 +1,9 @@
+{% if libraries %}
+    <ul>
+    {% for library in libraries %}
+        <p>{{ library.name }} - {{ library.adress }}</p>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Il n'y a pas encore de bibliothèque.</p>
+{% endif %}
