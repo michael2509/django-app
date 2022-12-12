@@ -22,6 +22,11 @@ Initialiser la base de donnée
 docker-compose exec web python manage.py migrate
 ```
 
+Ajouter dans la base de donnée
+```console
+docker-compose exec web python manage.py makemigrations && docker-compose exec web python manage.py migrate
+```
+
 Créer l'utilisateur admin
 ```console
 docker-compose exec web python manage.py createsuperuser
