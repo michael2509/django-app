@@ -43,6 +43,11 @@ Open browser in http://localhost:8000/admin
 
 Fixtures
 
+Load book fixtures in bdd
+```console
+docker-compose exec web python manage.py loaddata Book.json
+```
+
 https://docs.djangoproject.com/en/4.1/ref/django-admin/#django-admin-dumpdata
 
 https://docs.djangoproject.com/en/4.1/howto/initial-data/
