@@ -1,0 +1,11 @@
+<h1>Libraries</h1>
+
+<form action="{% url 'libraries' %}" method="get">
+    <input name="department_code" type="number" placeholder="Entrez un code de département...">
+</form>
+
+<ul>
+    {% for library in libraries %}
+        <li>{{ library.name }} - {{ library.adress }}</li>
+    {% endfor %}
+</ul>

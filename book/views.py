@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404, render
-from .models import Book
+from .models import Book, Library
 from django.template import loader
 from django.http import Http404
 
@@ -34,3 +34,14 @@ def detail(request, book_id):
 
 def borrow(request, book_id):
     return HttpResponse("You're trying to borrow the book %s." % book_id)
+
+# Create a function view to display all libraries
+def libraries(request):
+    if 'department_code' in request.GET:
+        department_code = request.GET.get('department_code')
+        libraries = Library.objects.filter(department_code=department_code)
+        return render(request, 'library/index.html', {'libraries': libraries})
+
+    else:
+        libraries = Library.objects.all()
+        return render(request, 'library/index.html', {'libraries': libraries})
