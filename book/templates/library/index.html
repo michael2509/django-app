@@ -1,9 +1,11 @@
-{% if libraries %}
-    <ul>
+<h1>Libraries</h1>
+
+<form action="{% url 'libraries' %}" method="get">
+    <input name="department_code" type="number" placeholder="Entrez un code de département...">
+</form>
+
+<ul>
     {% for library in libraries %}
-        <p>{{ library.name }} - {{ library.adress }}</p>
+        <li>{{ library.name }} - {{ library.adress }}</li>
     {% endfor %}
-    </ul>
-{% else %}
-    <p>Il n'y a pas encore de bibliothèque.</p>
-{% endif %}
+</ul>

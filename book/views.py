@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from .models import Library
 
-# Create your views here.
-def index(request):
-    libraries = Library.objects.all()
-    context = {'libraries': libraries}
-    return render(request, 'library/index.html', context)
+# Create a function view to display all libraries
+def libraries(request):
+    if 'department_code' in request.GET:
+        department_code = request.GET.get('department_code')
+        libraries = Library.objects.filter(department_code=department_code)
+        return render(request, 'library/index.html', {'libraries': libraries})
+
+    else:
+        libraries = Library.objects.all()
+        return render(request, 'library/index.html', {'libraries': libraries})
