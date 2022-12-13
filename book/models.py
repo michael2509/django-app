@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Book(models.Model):
@@ -17,8 +18,7 @@ class Book_instance(models.Model):
     # ForeignKey => many-to-one: one book_instance can have only one book but one book can have many book_instances
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     library = models.OneToOneField('Library', on_delete=models.CASCADE)
-    # TODO: add this field when our authentification system is ready
-    # borrower = models.OneToOneField('User', on_delete=models.CASCADE, default=None)
+    borrower = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, default=None)
     borrow_date = models.DateTimeField('date borrowed', null=True, blank=True)
     return_date = models.DateTimeField('date returned', null=True, blank=True)
 
@@ -30,8 +30,7 @@ class Library(models.Model):
     name = models.CharField(max_length=200, default="Bibliothèque sans nom")
     adress = models.CharField(max_length=200)
     department_code = models.IntegerField(default=75)
-    # TODO: add this field when our authentification system is ready
-    # owners = models.ManyToManyField('User')
+    owners = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name
