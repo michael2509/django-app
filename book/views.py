@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404, render
-from .models import Book, Library
+from .models import Book, Library, Book_instance
 from django.template import loader
 from django.http import Http404
 
@@ -45,3 +45,18 @@ def libraries(request):
     else:
         libraries = Library.objects.all()
         return render(request, 'library/index.html', {'libraries': libraries})
+
+def search(request):
+    if 'book_name' in request.GET:
+        book_name = request.GET.get('book_name')
+        
+        # get book instances with the book name
+        book_instances = Book_instance.objects.filter(book__title__icontains=book_name)
+
+        # # get books from book_instances
+        # books = [book_instance.book for book_instance in book_instances]
+
+        return render(request, 'book/search.html', {'book_instances': book_instances})
+    else:
+        return render(request, 'book/search.html')
+

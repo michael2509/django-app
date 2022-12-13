@@ -1,0 +1,11 @@
+<h1>Recherche de livres</h1>
+
+<form action="{% url 'search' %}" method="get">
+    <input name="book_name" type="text" placeholder="Entrez un nom de livre...">
+</form>
+
+<ul>
+    {% for book_instance in book_instances %}
+        <li>{{ book_instance }}</li>
+    {% endfor %}
+</ul>
