@@ -1,17 +1,16 @@
-<html>
-<head>
-    <title>Book list</title>
-</head>
-<body>
-    {% if book_list %}
+{% extends "base.html" %}
+
+{% block content %}
+{% if book_list %}
     <ul>
     {% for book in book_list %}
-        <li><a href="/book/{{ book.id }}/">{{ book.book_title }}</a></li>
-        
+        <li>
+            <img class="book-cover" src="{{ book.cover.url }}" alt="{{ book.title }}" />
+            <a href="/book/{{ book.id }}/">{{ book.title }}</a>
+        </li>
     {% endfor %}
     </ul>
-{% else %}
+    {% else %}
     <p>No books are available.</p>
-{% endif %}
-</body>
-</html>
+    {% endif %}
+{% endblock content %}

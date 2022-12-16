@@ -7,7 +7,7 @@ class Book(models.Model):
     author = models.CharField(max_length=80)
     editor = models.CharField(max_length=80)
     genre = models.CharField(max_length=30)
-    cover = models.CharField(max_length=100)
+    cover = models.ImageField(upload_to='images/', null=True, blank=True)
     # pub_date = models.DateTimeField('date published')
 
     def __str__(self):
@@ -23,7 +23,7 @@ class Book_instance(models.Model):
     return_date = models.DateTimeField('date returned', null=True, blank=True)
 
     def __str__(self):
-        return "%s chez %s" % (self.book, self.library)
+        return "%s (bibliothèque : %s)" % (self.book, self.library)
 
 
 class Library(models.Model):
