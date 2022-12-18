@@ -13,7 +13,7 @@ class Book(models.Model):
         return self.title
 
 
-class Book_instance(models.Model):
+class BookInstance(models.Model):
     # ForeignKey => many-to-one: one book_instance can have only one book but one book can have many book_instances
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     library = models.ForeignKey('Library', on_delete=models.CASCADE)

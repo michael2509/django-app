@@ -1,9 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, get_list_or_404, render
-from .models import Book, Library, Book_instance
+from .models import Book, Library, BookInstance
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render
+from django.views.generic.edit import CreateView
+from .forms import AddBookForm
+from django.urls import reverse_lazy
 
 
 def login(request):
@@ -41,8 +44,14 @@ def libraries(request):
 def search(request):
     if 'book_name' in request.GET:
         book_name = request.GET.get('book_name')
-        book_instances = Book_instance.objects.filter(book__title__icontains=book_name)
+        book_instances = BookInstance.objects.filter(book__title__icontains=book_name)
 
         return render(request, 'book/search.html', {'book_instances': book_instances})
     else:
         return render(request, 'book/search.html')
+
+
+class AddBook(CreateView):
+    form_class = AddBookForm
+    success_url = reverse_lazy("add_book")
+    template_name = "book/add_book.html"
