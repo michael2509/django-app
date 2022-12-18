@@ -7,10 +7,10 @@ class UserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "password", "role")
+        fields = ("username", "role")
 
 class UserChangeForm(UserChangeForm):
 
     class Meta:
         model = User
-        fields = ("username", "password", "role")
+        fields = ("username", "role")

@@ -7,18 +7,7 @@ from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from .forms import AddBookForm
 from django.urls import reverse_lazy
-
-
-def login(request):
-    if request.POST:
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username = username, password = password)
-        if user is not None:
-            messages.success(request, 'Success')
-        else:  
-            messages.error(request, 'Invalid username or password')
-    return render(request, 'registration/login.html')
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 def index(request):
@@ -51,7 +40,28 @@ def search(request):
         return render(request, 'book/search.html')
 
 
-class AddBook(CreateView):
+class AddBook(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     form_class = AddBookForm
     success_url = reverse_lazy("add_book")
     template_name = "book/add_book.html"
+
+    # allow this views only to users with role bookseller
+    def test_func(self):
+        print(self.request.user.role)
+        return self.request.user.role == 'bookseller'
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Book added successfully')
+            return render(request, self.template_name, {'form': form})
+        else:
+            messages.error(request, 'Error adding book')
+            return render(request , self.template_name, {'form': form})
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(user=request.user)
+        return render(request , self.template_name, {'form': form})
