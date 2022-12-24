@@ -21,3 +21,13 @@
 .book-cover {
     width: 100%;
 }
+
+.available, .success {
+    color: green;
+    font-weight: bolder;
+}
+
+.unavailable, .error {
+    color: red;
+    font-weight: bolder;
+}

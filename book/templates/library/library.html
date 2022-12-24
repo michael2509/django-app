@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ library.name }}</h1>
+
+    <h2>Emprunter un livre</h2>
+
+    <form action="{% url 'library' library.id %}" method="get">
+        <input name="book_name" type="text" placeholder="Entrez un nom de livre...">
+    </form>
+  
+{% if book_instances %}
+
+    <h2>Résultats de la recherche</h2>
+
+    <div class="result">
+    {% for book_instance in book_instances %}
+    <div class="card">
+        <img class="book-cover" src="{{ book_instance.book.cover.url }}" alt="Image du livre {{ book_instance.book.title }}">
+        <div class="container">
+            <h4><b>{{ book_instance.book.title }}</b></h4>
+            <p>{{ book_instance.library.name }}</p>
+            
+            {% if book_instance.borrower %}
+                <p class="unavailable">Indisponible</p>
+            {% else %}
+                <p class="available">Disponible</p>
+                <form action="{% url 'borrow_book' library.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="book_instance_id" value="{{ book_instance.id }}">
+                    {{ borrow_form.as_p }}
+                    <button type="submit">Emprunter</button>
+            {% endif %}
+
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+
+{% else %}
+    <p>Aucun livre ne correspond à votre recherche.</p>
+{% endif %}
+
+{% endblock %}

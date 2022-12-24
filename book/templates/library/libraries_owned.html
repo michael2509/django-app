@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Vos librairies</h1>
+
+{% if not libraries %}
+    <p>Vous n'êtes propriétaire d'aucune librairies</p>
+{% endif %}
+
+<ul>
+    {% for library in libraries %}
+    <li>
+        <a href="{% url 'library' library.id %}">{{ library.name }} - {{ library.adress }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -8,7 +8,12 @@ class AddBookForm(ModelForm):
 
     # select only libraries that the user is owner of
     def __init__(self, *args, **kwargs):
-        # get the user from the request
         user = kwargs.pop('user')
         super(AddBookForm, self).__init__(*args, **kwargs)
         self.fields['library'].queryset = Library.objects.filter(owners=user)
+
+
+class BorrowBookForm(ModelForm):
+    class Meta:
+        model = BookInstance
+        fields = ['borrower']

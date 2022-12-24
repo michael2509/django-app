@@ -17,7 +17,7 @@ class BookInstance(models.Model):
     # ForeignKey => many-to-one: one book_instance can have only one book but one book can have many book_instances
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     library = models.ForeignKey('Library', on_delete=models.CASCADE)
-    borrower = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    borrower = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, default=None)
     borrow_date = models.DateTimeField('date borrowed', null=True, blank=True)
     return_date = models.DateTimeField('date returned', null=True, blank=True)
 
