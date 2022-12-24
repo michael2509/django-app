@@ -3,6 +3,8 @@
 {% block content %}
     <h1>{{ library.name }}</h1>
 
+    <a href="{% url 'add_book' library.id %}">Ajouter un livre</a>
+
     <h2>Emprunter un livre</h2>
 
     <form action="{% url 'library' library.id %}" method="get">

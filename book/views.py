@@ -1,22 +1,13 @@
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, get_list_or_404, render
-from .models import Book, Library, BookInstance, User
+from django.shortcuts import get_object_or_404, render
+from .models import Library, BookInstance, User
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.views.generic.edit import CreateView
 from .forms import AddBookForm, BorrowBookForm
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .decorators import owner_required, bookseller_required
 
 
-def index(request):
-    book_list = get_list_or_404(Book) 
-
-    context = {
-        'book_list': book_list,
-    }
-    return render(request, 'book/index.html', context)
-
+def home(request):
+    return render(request, 'book/index.html')
 
 def libraries(request):
     if 'department_code' in request.GET:
@@ -39,40 +30,34 @@ def search(request):
         return render(request, 'book/search.html')
 
 
-class AddBook(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    login_url = '/accounts/login/'
-    redirect_field_name = 'redirect_to'
-    form_class = AddBookForm
-    success_url = reverse_lazy("add_book")
-    template_name = "book/add_book.html"
+@bookseller_required
+def add_book(request, library_id):
+    library = get_object_or_404(Library, id=library_id)
+    if request.method == 'GET':
+        form = AddBookForm(initial={'library': library})
+        return render(request, 'book/add_book.html', {'form': form, 'library_id': library_id})
 
-    # allow this views only to users with role bookseller
-    def test_func(self):
-        print(self.request.user.role)
-        return self.request.user.role == 'bookseller'
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, user=request.user)
+    if request.method == 'POST':
+        print(request.POST)
+        form = AddBookForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Book added successfully')
-            return render(request, self.template_name, {'form': form})
+            messages.success(request, 'Book added successfully')            
+            return redirect('library', library_id=library_id)
         else:
             messages.error(request, 'Error adding book')
-            return render(request , self.template_name, {'form': form})
+            return render(request, 'book/add_book.html', {'form': form, 'library_id': library_id})
 
-    def get(self, request, *args, **kwargs):
-        form = self.form_class(user=request.user)
-        return render(request , self.template_name, {'form': form})
 
+@bookseller_required
 def libraries_owned(request):
     libraries = Library.objects.filter(owners=request.user)
     return render(request, 'library/libraries_owned.html', {'libraries': libraries})
-
-def library(request, library_id):
-    if request.user.role == 'bookseller' and request.user not in library.owners.all():
-        return HttpResponse("You don't have permission to view this library")
     
+
+@owner_required
+def library(request, library_id):
+
     library = get_object_or_404(Library, id=library_id)
 
     # search book
@@ -90,10 +75,9 @@ def library(request, library_id):
 
     return render(request, 'library/library.html', {'library': library})
 
+@owner_required
 def borrow_book(request, library_id):
     if request.method == 'POST':
-        print('borrowing book')
-        library = get_object_or_404(Library, id=library_id)
         book_instance_id = request.POST.get('book_instance_id')
         book_instance = get_object_or_404(BookInstance, id=book_instance_id)
         borrow_form = BorrowBookForm(request.POST, instance=book_instance)
