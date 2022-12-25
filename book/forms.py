@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from .models import BookInstance, Library
+from .models import BookInstance
 
 class AddBookForm(ModelForm):
     class Meta:

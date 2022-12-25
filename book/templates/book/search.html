@@ -7,17 +7,22 @@
     <input name="book_name" type="text" placeholder="Entrez un nom de livre...">
 </form>
 
-{% if book_instances %}
+{% if books_infos %}
 
 <h2>Résultats de la recherche</h2>
 
 <div class="result">
-{% for book_instance in book_instances %}
+{% for book_infos in books_infos %}
 <div class="card">
-    <img class="book-cover" src="{{ book_instance.book.cover.url }}" alt="Image du livre {{ book_instance.book.title }}">
+    <img class="book-cover" src="{{ book_infos.book.cover.url }}" alt="Image du livre {{ book_infos.book.title }}">
     <div class="container">
-        <h4><b>{{ book_instance.book.title }}</b></h4>
-        <p>{{ book_instance.library.name }}</p>
+        <h4><b>{{ book_infos.book.title }}</b></h4>
+        <p>Présent chez :</p>
+        {% for library in book_infos.libraries %}
+            <ul>
+                <li>{{ library.name }}</li>
+            </ul>
+        {% endfor %}
     </div>
 </div>
 {% endfor %}

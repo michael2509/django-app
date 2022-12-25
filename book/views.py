@@ -25,12 +25,21 @@ def search(request):
         book_name = request.GET.get('book_name')
         book_instances = BookInstance.objects.filter(book__title__icontains=book_name)
 
-        return render(request, 'book/search.html', {'book_instances': book_instances})
+        # create a list of dict with a key title that contains the title of the book without duplicates
+        # and a key libraries that contains a list of libraries that have this book without duplicates
+        books_infos = []
+        for book_instance in book_instances:
+            if len(books_infos) == 0 or book_instance.book.title != books_infos[-1]['book'].title:
+                books_infos.append({'book': book_instance.book, 'libraries': []})
+            if len(books_infos[-1]['libraries']) == 0 or book_instance.library != books_infos[-1]['libraries'][-1]:
+                books_infos[-1]['libraries'].append(book_instance.library)
+
+        return render(request, 'book/search.html', {'books_infos': books_infos})
     else:
         return render(request, 'book/search.html')
 
 
-@bookseller_required
+@owner_required
 def add_book(request, library_id):
     library = get_object_or_404(Library, id=library_id)
     if request.method == 'GET':
@@ -66,12 +75,26 @@ def library(request, library_id):
         users = User.objects.all()
         book_name = request.GET.get('book_name')
         book_instances = BookInstance.objects.filter(library=library, book__title__icontains=book_name)
-        book_instances = sorted(book_instances, key=lambda x: (x.book.title, x.borrower is None), reverse=True)
-        book_instances = [book_instances[i] for i in range(len(book_instances)) if i == 0 or book_instances[i].book.title != book_instances[i-1].book.title]
 
-        borrow_form = BorrowBookForm()
+        # create a list of dict with a key book_instance, a key available and a key borrow_form which contains the form for the book instance
+        books_infos = []
+        for i in range(len(book_instances)):
 
-        return render(request, 'library/library.html', {'library': library, 'book_instances': book_instances, 'users': users, 'borrow_form': borrow_form})
+            # if the book is unavailable
+            if len(books_infos) == 0 or book_instances[i].book.title != books_infos[-1]['book_instance'].book.title:
+                borrow_form = BorrowBookForm(initial={'book_instance': book_instances[i]})
+                books_infos.append({'book_instance': book_instances[i], 'available': book_instances[i].borrower is None, 'borrow_form': borrow_form})
+
+            # if the book is available
+            if len(books_infos) > 0 and book_instances[i].book.title == books_infos[-1]['book_instance'].book.title:
+                if book_instances[i].borrower is None:
+                    borrow_form = BorrowBookForm(initial={'book_instance': book_instances[i]})
+                    # replace the unavailable book instance by the available book with same title
+                    books_infos[-1]['book_instance'] = book_instances[i]
+                    books_infos[-1]['available'] = book_instances[i].borrower is None
+                    books_infos[-1]['borrow_form'] = borrow_form
+
+        return render(request, 'library/library.html', {'library': library, 'users': users, 'books_infos': books_infos})
 
     return render(request, 'library/library.html', {'library': library})
 
