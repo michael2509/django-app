@@ -71,36 +71,31 @@ def library(request, library_id):
 
     library = get_object_or_404(Library, id=library_id)
 
-    # search book
-    if request.GET.get('book_name'):
-        users = User.objects.all()
+    if request.GET.get('book_name') and not request.GET.get('borrower_name'):
         book_name = request.GET.get('book_name')
-        book_instances = BookInstance.objects.filter(library=library, book__title__icontains=book_name)
+        book_instances = BookInstance.objects.filter(book__title__icontains=book_name, library=library)
 
-        # create a list of dict with a key book_instance, a key available and a key borrow_form which contains the form for the book instance
-        books_infos = []
-        for i in range(len(book_instances)):
+    if request.GET.get('borrower_name') and not request.GET.get('book_name'):
+        borrower_name = request.GET.get('borrower_name')
+        book_instances = BookInstance.objects.filter(borrower__username__icontains=borrower_name, library=library)
 
-            if len(books_infos) == 0 or book_instances[i].book.title != books_infos[-1]['book_instance'].book.title:
-                books_infos.append({'book_instance': book_instances[i], 'available': book_instances[i].borrower is None})
 
-            # if the book is available
-            if len(books_infos) > 0 and book_instances[i].book.title == books_infos[-1]['book_instance'].book.title:
-                if book_instances[i].borrower is None:
-                    # replace the unavailable book instance by the available book with same title
-                    books_infos[-1]['book_instance'] = book_instances[i]
-                    books_infos[-1]['available'] = book_instances[i].borrower is None
+    if request.GET.get('book_name') and request.GET.get('borrower_name'):
+        book_name = request.GET.get('book_name')
+        borrower_name = request.GET.get('borrower_name')
+        book_instances = BookInstance.objects.filter(book__title__icontains=book_name, borrower__username__icontains=borrower_name, library=library)
 
-        return render(request, 'library/library.html', {'library': library, 'users': users, 'books_infos': books_infos})
-
-    return render(request, 'library/library.html', {'library': library})
+    if not request.GET.get('book_name') and not request.GET.get('borrower_name'):
+        book_instances = BookInstance.objects.filter(library=library)
+    
+    return render(request, 'library/library.html', {'library': library, 'book_instances': book_instances})
 
 @owner_required
 def borrow_book(request, library_id):
     if request.method == 'GET':
         book_instance_id = request.GET.get('book_instance_id')
         book_instance = get_object_or_404(BookInstance, id=book_instance_id)
-        borrow_form = BorrowBookForm(initial={'book_instance': book_instance})
+        borrow_form = BorrowBookForm(initial={'book_instance': book_instance, 'borrower': book_instance.borrower})
         return render(request, 'book/borrow_book.html', {'library_id': library_id, 'book_instance': book_instance, 'borrow_form': borrow_form})
 
     if request.method == 'POST':
@@ -110,9 +105,9 @@ def borrow_book(request, library_id):
 
         if borrow_form.is_valid():
             borrow_form.save()
-            messages.success(request, 'Book borrowed successfully')
+            messages.success(request, 'Emprunt mis à jour')
         else:
             print(borrow_form.errors)
-            messages.error(request, 'Error borrowing book')
+            messages.error(request, 'Erreur durant l\'emprunt')
 
     return redirect('library', library_id=library_id)

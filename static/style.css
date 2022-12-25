@@ -31,3 +31,8 @@
     color: red;
     font-weight: bolder;
 }
+
+.borrower {
+    font-weight: normal;
+    color: black;
+}

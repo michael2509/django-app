@@ -9,28 +9,30 @@
 
     <form action="{% url 'library' library.id %}" method="get">
         <input name="book_name" type="text" placeholder="Entrez un nom de livre...">
+        <input name="borrower_name" type="text" placeholder="Entrez un username...">
+        <input type="submit" value="Rechercher">
     </form>
   
-{% if books_infos %}
+{% if book_instances %}
 
     <h2>Résultats de la recherche</h2>
 
     <div class="result">
-        {% for book_infos in books_infos %}
+        {% for book_instance in book_instances %}
         <div class="card">
-            <img class="book-cover" src="{{ book_infos.book_instance.book.cover.url }}" alt="Image du livre {{ book_infos.book_instance.book.title }}">
+            <img class="book-cover" src="{{ book_instance.book.cover.url }}" alt="Image du livre {{ book_instance.book.title }}">
             <div class="container">
-                <h4><b>{{ book_infos.book_instance.book.title }}</b></h4>
-                <p>{{ book_infos.book_instance.library.name }}</p>
+                <h4><b>{{ .book_instance.book.title }}</b></h4>
+                <p>{{ book_instance.library.name }}</p>
                 
-                {% if not book_infos.available %}
-                    <p class="unavailable">Indisponible</p>
+                {% if book_instance.borrower %}
+                <p class="unavailable">Indisponible - <span class="borrower">Emprunté par <strong>{{ book_instance.borrower.username }}</strong></span></p>
                 {% else %}
-                    <p class="available">Disponible</p>
-                    <a href="{% url 'borrow_book' library.id %}?book_instance_id={{book_infos.book_instance.id}}">
-                        <button>Voir</button>
-                    </a>
-                {% endif %}
+                <p class="available">Disponible</p>
+                    {% endif %}
+                <a href="{% url 'borrow_book' library.id %}?book_instance_id={{book_instance.id}}">
+                    <button>Voir</button>
+                </a>
 
             </div>
         </div>
