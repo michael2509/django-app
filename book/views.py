@@ -73,7 +73,6 @@ def library(request, library_id):
 
     # search book
     if request.GET.get('book_name'):
-        print('searching book')
         users = User.objects.all()
         book_name = request.GET.get('book_name')
         book_instances = BookInstance.objects.filter(library=library, book__title__icontains=book_name)
@@ -82,19 +81,15 @@ def library(request, library_id):
         books_infos = []
         for i in range(len(book_instances)):
 
-            # if the book is unavailable
             if len(books_infos) == 0 or book_instances[i].book.title != books_infos[-1]['book_instance'].book.title:
-                borrow_form = BorrowBookForm(initial={'book_instance': book_instances[i]})
-                books_infos.append({'book_instance': book_instances[i], 'available': book_instances[i].borrower is None, 'borrow_form': borrow_form})
+                books_infos.append({'book_instance': book_instances[i], 'available': book_instances[i].borrower is None})
 
             # if the book is available
             if len(books_infos) > 0 and book_instances[i].book.title == books_infos[-1]['book_instance'].book.title:
                 if book_instances[i].borrower is None:
-                    borrow_form = BorrowBookForm(initial={'book_instance': book_instances[i]})
                     # replace the unavailable book instance by the available book with same title
                     books_infos[-1]['book_instance'] = book_instances[i]
                     books_infos[-1]['available'] = book_instances[i].borrower is None
-                    books_infos[-1]['borrow_form'] = borrow_form
 
         return render(request, 'library/library.html', {'library': library, 'users': users, 'books_infos': books_infos})
 
@@ -102,6 +97,12 @@ def library(request, library_id):
 
 @owner_required
 def borrow_book(request, library_id):
+    if request.method == 'GET':
+        book_instance_id = request.GET.get('book_instance_id')
+        book_instance = get_object_or_404(BookInstance, id=book_instance_id)
+        borrow_form = BorrowBookForm(initial={'book_instance': book_instance})
+        return render(request, 'book/borrow_book.html', {'library_id': library_id, 'book_instance': book_instance, 'borrow_form': borrow_form})
+
     if request.method == 'POST':
         book_instance_id = request.POST.get('book_instance_id')
         book_instance = get_object_or_404(BookInstance, id=book_instance_id)

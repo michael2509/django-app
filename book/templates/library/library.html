@@ -5,7 +5,7 @@
 
     <a href="{% url 'add_book' library.id %}">Ajouter un livre</a>
 
-    <h2>Emprunter un livre</h2>
+    <h2>Recherche de livre</h2>
 
     <form action="{% url 'library' library.id %}" method="get">
         <input name="book_name" type="text" placeholder="Entrez un nom de livre...">
@@ -27,11 +27,9 @@
                     <p class="unavailable">Indisponible</p>
                 {% else %}
                     <p class="available">Disponible</p>
-                    <form action="{% url 'borrow_book' library.id %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="book_instance_id" value="{{ book_infos.book_instance.id }}">
-                        {{ book_infos.borrow_form.as_p }}
-                        <button type="submit">Emprunter</button>
+                    <a href="{% url 'borrow_book' library.id %}?book_instance_id={{book_infos.book_instance.id}}">
+                        <button>Voir</button>
+                    </a>
                 {% endif %}
 
             </div>
