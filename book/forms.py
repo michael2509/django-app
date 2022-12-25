@@ -1,11 +1,10 @@
-from django.forms import ModelForm, HiddenInput
-from .models import BookInstance
+from django.forms import ModelForm
+from .models import Book, BookInstance
 
 class AddBookForm(ModelForm):
     class Meta:
-        model = BookInstance
-        fields = ['book', 'library']
-        widgets = {'library': HiddenInput()}
+        model = Book
+        fields = ['title', 'author', 'editor', 'genre', 'cover']
 
 
 class BorrowBookForm(ModelForm):

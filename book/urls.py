@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -10,4 +13,4 @@ urlpatterns = [
     path('back-office/libraries/<int:library_id>', views.library, name='library'),
     path('back-office/libraries/<int:library_id>/borrow-book', views.borrow_book, name='borrow_book'),
     path('back-office/libraries/<int:library_id>/add-book', views.add_book, name='add_book')
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

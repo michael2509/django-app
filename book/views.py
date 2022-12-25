@@ -41,21 +41,23 @@ def search(request):
 
 @owner_required
 def add_book(request, library_id):
-    library = get_object_or_404(Library, id=library_id)
+
     if request.method == 'GET':
-        form = AddBookForm(initial={'library': library})
-        return render(request, 'book/add_book.html', {'form': form, 'library_id': library_id})
+        book_form = AddBookForm()
+
+        return render(request, 'book/add_book.html', {'library_id': library_id, 'book_form': book_form})
 
     if request.method == 'POST':
-        print(request.POST)
-        form = AddBookForm(request.POST)
-        if form.is_valid():
-            form.save()
+        book_form = AddBookForm(request.POST, request.FILES)
+
+        if book_form.is_valid():
+            book = book_form.save()
+            BookInstance.objects.create(book=book, library_id=library_id)
             messages.success(request, 'Book added successfully')            
             return redirect('library', library_id=library_id)
         else:
             messages.error(request, 'Error adding book')
-            return render(request, 'book/add_book.html', {'form': form, 'library_id': library_id})
+            return render(request, 'book/add_book.html', {'book_form': book_form, 'library_id': library_id})
 
 
 @bookseller_required
