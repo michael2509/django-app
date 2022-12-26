@@ -36,3 +36,7 @@
     font-weight: normal;
     color: black;
 }
+
+.strong {
+    font-weight: bolder;
+}
