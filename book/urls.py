@@ -10,7 +10,8 @@ urlpatterns = [
     path('libraries', views.libraries, name='libraries'),
     # Routes du Back Office
     path('back-office/libraries', views.libraries_owned, name='libraries_owned'),
-    path('back-office/libraries/<int:library_id>', views.library, name='library'),
-    path('back-office/libraries/<int:library_id>/borrow-book', views.borrow_book, name='borrow_book'),
-    path('back-office/libraries/<int:library_id>/add-book', views.add_book, name='add_book')
+    path('back-office/library/<int:library_id>', views.library, name='library'),
+    path('back-office/library/<int:library_id>/add-book', views.add_book, name='add_book'),
+    path('back-office/library/<int:library_id>/borrow-book', views.borrow_book, name='borrow_book'),
+    path('back-office/library/<int:library_id>/late_borrow_list', views.late_borrow_list, name='late_borrow_list')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

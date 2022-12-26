@@ -4,6 +4,7 @@
     <h1>{{ library.name }}</h1>
 
     <a href="{% url 'add_book' library.id %}">Ajouter un livre</a>
+    <a href="{% url 'late_borrow_list' library.id %}">Liste des emprunts en retard</a>
 
     <h2>Recherche de livre</h2>
 
