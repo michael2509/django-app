@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('book/search', views.search, name='search'),
     path('libraries', views.libraries, name='libraries'),
+    path('chat', views.chat, name='chat'),
     # Routes du Back Office
     path('back-office/libraries', views.libraries_owned, name='libraries_owned'),
     path('back-office/library/<int:library_id>', views.library, name='library'),

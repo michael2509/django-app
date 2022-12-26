@@ -1,5 +1,6 @@
-from django.forms import ModelForm, DateInput as BaseDateInput, DateTimeInput as BaseDateTimeInput, HiddenInput
-from .models import Book, BookInstance, LectureGroup
+from datetime import datetime
+from django.forms import ModelForm, DateInput as BaseDateInput, DateTimeInput as BaseDateTimeInput, HiddenInput, Textarea
+from .models import Book, BookInstance, LectureGroup, Message
 
 class DateInput(BaseDateInput):
     input_type = 'date'
@@ -44,3 +45,19 @@ class CreateLectureGroupForm(ModelForm):
         self.fields['participants'].required = True
         self.fields['startDateTime'].required = True
         self.fields['endDateTime'].required = True
+
+
+class SendMessageForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['sender', 'content', 'creationDateTime']
+        widgets = {
+            'content': Textarea(attrs={'rows': 4, 'cols': 15}),
+            'sender': HiddenInput(),
+            'creationDateTime': HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content'].required = True
+        self.fields['creationDateTime'].initial = datetime.now()

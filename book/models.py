@@ -43,3 +43,11 @@ class LectureGroup(models.Model):
 
     def __str__(self):
         return "Groupe de lecture chez %s du %s à %s" % (self.library.name, self.startDateTime, self.endDateTime)
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    creationDateTime = models.DateTimeField('date of creation', default=datetime.now())
+
+    def __str__(self):
+        return "Message de %s envoyé le %s" % (self.sender.username, self.creationDateTime)

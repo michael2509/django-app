@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Chat</h1>
+    <h2>Envoyer un message</h2>
+    <form action="{% url 'chat' %}" method="post">
+        {% csrf_token %}
+        {{ message_form.as_p }}
+        <button type="submit">envoyer</button>
+    </form>
+    
+    <h2>Messages</h2>
+    {% if "chat_messages" %}
+        {% for message in chat_messages %}
+            <p><span class="strong">{{ message.sender.username }}</span> - envoyé le {{ message.creationDateTime }}</p>
+            <p>{{ message.content }}</p>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>Aucun messages.</p>
+    {% endif %}
+{% endblock %}
