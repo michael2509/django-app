@@ -7,7 +7,6 @@ class Book(models.Model):
     editor = models.CharField(max_length=80)
     genre = models.CharField(max_length=30)
     cover = models.ImageField(upload_to='images/', null=True, blank=True)
-    # pub_date = models.DateTimeField('date published')
 
     def __str__(self):
         return self.title
@@ -18,8 +17,8 @@ class BookInstance(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     library = models.ForeignKey('Library', on_delete=models.CASCADE)
     borrower = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, default=None)
-    borrow_date = models.DateTimeField('date borrowed', null=True, blank=True)
-    return_date = models.DateTimeField('date returned', null=True, blank=True)
+    borrow_date = models.DateField('date borrowed', null=True, blank=True)
+    return_date = models.DateField('date returned', null=True, blank=True)
 
     def __str__(self):
         return "%s (bibliothèque : %s)" % (self.book, self.library)

@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, render
-from .models import Library, BookInstance, User
+from .models import Library, BookInstance
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import AddBookForm, BorrowBookForm
 from .decorators import owner_required, bookseller_required
+from datetime import date
 
 
 def home(request):
@@ -95,7 +96,12 @@ def borrow_book(request, library_id):
     if request.method == 'GET':
         book_instance_id = request.GET.get('book_instance_id')
         book_instance = get_object_or_404(BookInstance, id=book_instance_id)
-        borrow_form = BorrowBookForm(initial={'book_instance': book_instance, 'borrower': book_instance.borrower})
+        borrow_form = BorrowBookForm(initial={
+            'book_instance': book_instance,
+            'borrower': book_instance.borrower,
+            'borrow_date': book_instance.borrow_date,
+            'return_date': book_instance.return_date
+        })
         return render(request, 'book/borrow_book.html', {'library_id': library_id, 'book_instance': book_instance, 'borrow_form': borrow_form})
 
     if request.method == 'POST':
@@ -111,3 +117,10 @@ def borrow_book(request, library_id):
             messages.error(request, 'Erreur durant l\'emprunt')
 
     return redirect('library', library_id=library_id)
+
+@owner_required
+def late_borrow_list(request, library_id):
+    library = get_object_or_404(Library, id=library_id)
+    book_instances = BookInstance.objects.filter(library=library, return_date__lt=date.today())
+
+    return render(request, 'library/late_borrow_list.html', {'library': library, 'book_instances': book_instances})

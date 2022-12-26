@@ -27,7 +27,7 @@
     font-weight: bolder;
 }
 
-.unavailable, .error {
+.unavailable, .error, .late {
     color: red;
     font-weight: bolder;
 }
