@@ -34,14 +34,16 @@ def search(request):
         book_name = request.GET.get('book_name')
         book_instances = BookInstance.objects.filter(book__title__icontains=book_name)
 
-        # create a list of dict with a key title that contains the title of the book without duplicates
-        # and a key libraries that contains a list of libraries that have this book without duplicates
         books_infos = []
         for book_instance in book_instances:
-            if len(books_infos) == 0 or book_instance.book.title != books_infos[-1]['book'].title:
+            if not any(book_info['book'].title == book_instance.book.title for book_info in books_infos):
                 books_infos.append({'book': book_instance.book, 'libraries': []})
-            if len(books_infos[-1]['libraries']) == 0 or book_instance.library != books_infos[-1]['libraries'][-1]:
-                books_infos[-1]['libraries'].append(book_instance.library)
+                all_libraries = Library.objects.all()
+                for library in all_libraries:
+                    if not BookInstance.objects.filter(book=book_instance.book, library=library, borrower__isnull=False):
+                        books_infos[-1]['libraries'].append({'library': library, 'available': True})
+                    else:
+                        books_infos[-1]['libraries'].append({'library': library, 'available': False})
 
         return render(request, 'book/search.html', {'books_infos': books_infos})
     else:

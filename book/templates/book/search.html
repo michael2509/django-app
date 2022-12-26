@@ -17,12 +17,16 @@
     <img class="book-cover" src="{{ book_infos.book.cover.url }}" alt="Image du livre {{ book_infos.book.title }}">
     <div class="container">
         <h4><b>{{ book_infos.book.title }}</b></h4>
-        <p>Présent chez :</p>
-        {% for library in book_infos.libraries %}
-            <ul>
-                <li>{{ library.name }}</li>
-            </ul>
-        {% endfor %}
+        <p>Disponible chez :</p>
+        <ul>
+            {% for lib_dict in book_infos.libraries %}
+                {% if lib_dict.available == True %}
+                    <li>{{ lib_dict.library.name }} - <span class="available">(Disponible)</span></li>
+                {% else %}
+                    <li>{{ lib_dict.library.name }} - <span class="unavailable">(Indisponible)</span></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endfor %}
