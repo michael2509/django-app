@@ -4,8 +4,9 @@
     <h1>Accueil</h1>
     <a href="{% url 'search' %}">Recherche de livre</a>
     <a href="{% url 'libraries' %}">Recherche de librairies</a>
+    {% if user.is_authenticated %}
     <a href="{% url 'chat' %}">Chat</a>
-
+    {% endif %}
     {% if user.is_authenticated and user.role == "bookseller" %}
         <a href="{% url 'libraries_owned' %}">Back-office</a>
     {% endif %}
@@ -18,13 +19,14 @@
         <h2>Vos prochains groupe de lecture</h2>
         {% if lecture_groups %}
             {% for lecture_group in lecture_groups %}
-                <h3>Du {{ lecture_group.startDateTime }} au {{ lecture_group.endDateTime }}</h3>
+                <h3>Groupe de lecture chez {{ lecture_group.library }}</h3>
+                <h4>Du {{ lecture_group.startDateTime }} au {{ lecture_group.endDateTime }}</h4>
                 <p>Participants : 
                     {% for participant in lecture_group.participants.all %}
-                        {{ participant.username }}
-                        {% if not forloop.last %}, {% endif %}
+                        {{ participant.username }}{% if not forloop.last %},{% endif %}
                     {% endfor %}
                 </p>
+                {% if not forloop.last %}<hr>{% endif %}
             {% endfor %}
         {% else %}
             <p>Vous n'êtes inscrit à aucun group de lecture dans cette library.</p>
