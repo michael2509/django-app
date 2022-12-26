@@ -8,7 +8,12 @@ from datetime import date
 
 
 def home(request):
-    return render(request, 'book/index.html')
+    book_instances = None
+
+    if request.user.is_authenticated and request.user.role == 'customer':
+        book_instances = BookInstance.objects.filter(borrower=request.user, return_date__lt=date.today())
+
+    return render(request, 'book/index.html', {'user': request.user, 'book_instances': book_instances})
 
 def libraries(request):
     if 'department_code' in request.GET:
