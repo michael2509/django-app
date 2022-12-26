@@ -1,19 +1,21 @@
 from django.shortcuts import get_object_or_404, render
-from .models import Library, BookInstance
+from .models import LectureGroup, Library, BookInstance
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .forms import AddBookForm, BorrowBookForm
+from .forms import AddBookForm, BorrowBookForm, CreateLectureGroupForm
 from .decorators import owner_required, bookseller_required
 from datetime import date
 
 
 def home(request):
     book_instances = None
+    lecture_groups = None
 
     if request.user.is_authenticated and request.user.role == 'customer':
         book_instances = BookInstance.objects.filter(borrower=request.user, return_date__lt=date.today())
+        lecture_groups = LectureGroup.objects.filter(participants=request.user)
 
-    return render(request, 'book/index.html', {'user': request.user, 'book_instances': book_instances})
+    return render(request, 'book/index.html', {'user': request.user, 'book_instances': book_instances, 'lecture_groups': lecture_groups})
 
 def libraries(request):
     if 'department_code' in request.GET:
@@ -129,3 +131,26 @@ def late_borrow_list(request, library_id):
     book_instances = BookInstance.objects.filter(library=library, return_date__lt=date.today())
 
     return render(request, 'library/late_borrow_list.html', {'library': library, 'book_instances': book_instances})
+
+@owner_required
+def lecture_group(request, library_id):
+    library = get_object_or_404(Library, id=library_id)
+
+    if request.method == 'GET':
+        lecture_group_form = CreateLectureGroupForm(initial={'library': library})
+        lecture_groups = LectureGroup.objects.filter(library=library).order_by('startDateTime')
+        
+        return render(request, 'library/lecture_group.html', {'library': library, 'lecture_group_form': lecture_group_form, 'lecture_groups': lecture_groups})
+
+    if request.method == 'POST':
+        lecture_group_form = CreateLectureGroupForm(request.POST)
+
+        if lecture_group_form.is_valid():
+            lecture_group_form.save()
+            lecture_groups = LectureGroup.objects.filter(library=library).order_by('startDateTime')
+            messages.success(request, 'Groupe de lecture créé')
+            return render(request, 'library/lecture_group.html', {'library': library, 'lecture_group_form': lecture_group_form, 'lecture_groups': lecture_groups})
+        else:
+            messages.error(request, 'Erreur durant la création du groupe de lecture')
+            lecture_groups = LectureGroup.objects.filter(library=library).order_by('startDateTime')
+            return render(request, 'library/lecture_group.html', {'library': library, 'lecture_group_form': lecture_group_form, 'lecture_groups': lecture_groups})

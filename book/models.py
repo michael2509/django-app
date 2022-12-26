@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import User
+from datetime import datetime, timedelta
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -13,7 +14,6 @@ class Book(models.Model):
 
 
 class BookInstance(models.Model):
-    # ForeignKey => many-to-one: one book_instance can have only one book but one book can have many book_instances
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     library = models.ForeignKey('Library', on_delete=models.CASCADE)
     borrower = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, default=None)
@@ -32,3 +32,14 @@ class Library(models.Model):
 
     def __str__(self):
         return self.name
+
+class LectureGroup(models.Model):
+    participants = models.ManyToManyField(User)
+    library = models.ForeignKey(Library, on_delete=models.CASCADE)    
+
+    startDateTime = models.DateTimeField('start date time of the meeting', default=datetime.now())
+    endDateTime = models.DateTimeField('start date time of the meeting', default=datetime.now() + timedelta(hours=1))
+
+
+    def __str__(self):
+        return "Groupe de lecture chez %s du %s à %s" % (self.library.name, self.startDateTime, self.endDateTime)
