@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404, render
-from .models import LectureGroup, Library, BookInstance
+from .models import LectureGroup, Library, BookInstance, Message
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import AddBookForm, BorrowBookForm, CreateLectureGroupForm, SendMessageForm
 from .decorators import owner_required, bookseller_required
 from datetime import date
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -155,3 +156,25 @@ def lecture_group(request, library_id):
             messages.error(request, 'Erreur durant la création du groupe de lecture')
         
         return render(request, 'library/lecture_group.html', {'library': library, 'lecture_group_form': lecture_group_form, 'lecture_groups': lecture_groups})
+
+
+@login_required
+def chat(request):
+    
+    if request.method == 'GET':
+        chat_messages = Message.objects.filter().order_by('-creationDateTime')
+        message_form = SendMessageForm(initial={'sender': request.user})
+
+        return render(request, 'book/chat.html', {'chat_messages': chat_messages, 'message_form': message_form})
+
+    if request.method == 'POST':
+        message_form = SendMessageForm(request.POST)
+        chat_messages = Message.objects.filter().order_by('-creationDateTime')
+
+        if message_form.is_valid():
+            message_form.save()
+            messages.success(request, 'Message envoyé')
+        else:
+            messages.error(request, 'Erreur durant l\'envoi du message')
+
+        return render(request, 'book/chat.html', {'chat_messages': chat_messages, 'message_form': message_form})

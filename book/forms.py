@@ -47,17 +47,17 @@ class CreateLectureGroupForm(ModelForm):
         self.fields['endDateTime'].required = True
 
 
-# class SendMessageForm(ModelForm):
-#     class Meta:
-#         model = Message
-#         fields = ['sender', 'content', 'creationDateTime']
-#         widgets = {
-#             'content': Textarea(attrs={'rows': 4, 'cols': 15}),
-#             'sender': HiddenInput(),
-#             'creationDateTime': HiddenInput(),
-#         }
+class SendMessageForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['sender', 'content', 'creationDateTime']
+        widgets = {
+            'content': Textarea(attrs={'rows': 4, 'cols': 15}),
+            'sender': HiddenInput(),
+            'creationDateTime': HiddenInput(),
+        }
 
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['content'].required = True
-#         self.fields['creationDateTime'].initial = datetime.now()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content'].required = True
+        self.fields['creationDateTime'].initial = datetime.now()

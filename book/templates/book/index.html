@@ -4,6 +4,9 @@
     <h1>Accueil</h1>
     <a href="{% url 'search' %}">Recherche de livre</a>
     <a href="{% url 'libraries' %}">Recherche de librairies</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'chat' %}">Chat</a>
+    {% endif %}
     {% if user.is_authenticated and user.role == "bookseller" %}
         <a href="{% url 'libraries_owned' %}">Back-office</a>
     {% endif %}
@@ -13,7 +16,7 @@
     {% endif %}
 
     {% if user.role == "customer" %}
-        <h2>Vos prochains groupes de lecture</h2>
+        <h2>Vos prochains groupe de lecture</h2>
         {% if lecture_groups %}
             {% for lecture_group in lecture_groups %}
                 <h3>Groupe de lecture chez {{ lecture_group.library }}</h3>
