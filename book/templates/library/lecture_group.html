@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ library.name }}</h1>
+    <h2>Créer un groupe de lecture</h2>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ lecture_group_form.as_p }}
+        <input type="submit" value="Créer" />
+    </form>
+    <h2>Groupes de lecture</h2>
+    {% if lecture_groups %}
+        {% for lecture_group in lecture_groups %}
+            <h3>Du {{ lecture_group.startDateTime }} au {{ lecture_group.endDateTime }}</h3>
+            <p>Participants : 
+                {% for participant in lecture_group.participants.all %}
+                    {{ participant.username }}
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        {% endfor %}
+    {% else %}
+        <p>Aucun groupe de lecture dans cette library.</p>
+    {% endif %}
+{% endblock %}

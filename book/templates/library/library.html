@@ -4,6 +4,7 @@
     <h1>{{ library.name }}</h1>
 
     <a href="{% url 'add_book' library.id %}">Ajouter un livre</a>
+    <a href="{% url 'lecture_group' library.id %}">Groupes de lecture</a>
     <a href="{% url 'late_borrow_list' library.id %}">Liste des emprunts en retard</a>
 
     <h2>Recherche de livre</h2>
@@ -30,7 +31,7 @@
                 <p class="unavailable">Indisponible - <span class="borrower">Emprunté par <strong>{{ book_instance.borrower.username }}</strong></span></p>
                 {% else %}
                 <p class="available">Disponible</p>
-                    {% endif %}
+                {% endif %}
                 <a href="{% url 'borrow_book' library.id %}?book_instance_id={{book_instance.id}}">
                     <button>Voir</button>
                 </a>
