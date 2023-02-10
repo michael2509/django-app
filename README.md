@@ -1,8 +1,5 @@
 ## Lancer le projet  
 
-Notre library-project possède plusieurs apps (principe django)
-Les relations entre les modèles de bdd (ou entités) doivent être définies que d'un côté de la relation
-
 Cloner le projet
 ```console
 git clone git@github.com:michael2509/django-app.git
@@ -22,14 +19,10 @@ Initialiser la base de donnée
 docker-compose exec web python manage.py migrate
 ```
 
-Ajouter dans la base de donnée
-```console
-docker-compose exec web python manage.py makemigrations && docker-compose exec web python manage.py migrate
-```
-
 Créer l'utilisateur admin
 ```console
 docker-compose exec web python manage.py createsuperuser
 ```
 
-Open browser in http://localhost:8000/admin
+Super admin panel : http://localhost:8000/admin  
+App : http://localhost:8000

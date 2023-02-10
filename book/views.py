@@ -12,7 +12,7 @@ def home(request):
     book_instances = None
     lecture_groups = None
 
-    if request.user.is_authenticated and request.user.role == 'customer':
+    if request.user.is_authenticated:
         book_instances = BookInstance.objects.filter(borrower=request.user, return_date__lt=date.today())
         lecture_groups = LectureGroup.objects.filter(participants=request.user)
 
